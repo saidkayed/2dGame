@@ -8,10 +8,11 @@ public class PlanetClick : MonoBehaviour
 {
     public GameObject Planet1;
      public GameObject Planet2;
+    public GameObject Planet3;
 
     //public Camera maincamera;
 
-    
+
     bool planet_is_clicked = false;
     //public GameObject cubetest;
     // Start is called before the first frame update
@@ -57,6 +58,7 @@ public class PlanetClick : MonoBehaviour
         planet_is_clicked = true;
         Planet1.GetComponent<SpriteRenderer>().DOFade(-1, 5);
        Planet2.GetComponent<SpriteRenderer>().DOFade(-1, 5);
+        Planet3.GetComponent<SpriteRenderer>().DOFade(-1, 5);
     }
 
     IEnumerator Load_Level()

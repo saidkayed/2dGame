@@ -6,13 +6,23 @@ using DG.Tweening;
 public class Player_Controller : MonoBehaviour
 {
     Vector2 movement;
+
     public float speed;
+    public Vector2 Jump_Height;
+
     float Camera_POS_X;
+    float Camera_Height;
 
     Tween myTween;
     float Negativ_Cam_pos;
 
     Animator anim;
+
+    float playerHeight;
+
+    bool isGrounded;
+    bool isA;
+    bool isD;
 
 
 
@@ -24,12 +34,27 @@ public class Player_Controller : MonoBehaviour
         StartCoroutine("Move_Cam");
         anim = GetComponent<Animator>();
 
+        Camera_Height = Camera.main.transform.position.y;
+        
 
 
     }
-    void FixedUpdate()
+    void Update()
     {
 
+        
+
+        if (isD)
+        {
+            myTween = Camera.main.transform.DOMoveX(transform.position.x+5, 2);
+        } 
+        if(isA)
+        {
+            myTween = Camera.main.transform.DOMoveX(transform.position.x-5, 2);
+        }
+
+      
+        
         if (Input.GetKey("w") || Input.GetKey("d") || Input.GetKey("a") || Input.GetKey("s"))
         {
 
@@ -40,63 +65,99 @@ public class Player_Controller : MonoBehaviour
             float moveVertical = Input.GetAxis("Vertical");
 
 
-            movement = new Vector2(moveHorizontal * speed, moveVertical * speed);
+            movement = new Vector2(moveHorizontal * speed,0);
             rb.velocity = movement;
         }
         else
         {
-            anim.Play("Idle");
+
             // speed = 0;
+           
             rb.velocity = Vector2.zero;
-            //rb.AddForce(movement * speed);
+            if (isGrounded) {
+                anim.Play("Idle");
+            }
         }
+      
 
         if (Input.GetKey("a"))
         {
-            anim.Play("Run");
+            if (isGrounded)
+            {
+                anim.Play("Run");
+            }
             GetComponent<SpriteRenderer>().flipX = true;
         }
 
         if (Input.GetKey("d"))
         {
+            if (isGrounded)
+            {
+                anim.Play("Run");
+            }
+
             GetComponent<SpriteRenderer>().flipX= false;
-            anim.Play("Run");
+         
         }
-        if (Input.GetKey("w"))
+
+        if (Input.GetKeyDown("w"))
         {
-            anim.Play("Run");
+
+            if (isGrounded)
+            {
+          
+                isGrounded = false;
+                anim.Play("Jumping");
+                transform.DOMoveY(transform.position.y + 2, 0.8f);
+             
+                
+
+            }
         }
+       /*
         if (Input.GetKey("s"))
         {
             anim.Play("Run");
         }
-
-
+        */
     }
-    IEnumerator Move_Cam(){
-
-
-        print("fuck");
+    IEnumerator Move_Cam(){       
         while (true)
         {
-           
+            
+
             if (Input.GetKeyDown("a"))
             {
 
-                print("jhe");
-                myTween = Camera.main.transform.DOMoveX(transform.position.x - 5, 0.8f);
-                //yield return myTween.WaitForCompletion();
+                isD = false;
+                isA = true;
+             
+                myTween = Camera.main.transform.DOMoveX(transform.position.x - 5, 2f);
+          
             }else if (Input.GetKeyDown("d"))
             {
-                myTween = Camera.main.transform.DOMoveX(transform.position.x + 5, 0.8f);
-                //yield return myTween.WaitForCompletion();
+                isA = false;
+                isD = true;
+                myTween = Camera.main.transform.DOMoveX(transform.position.x + 5, 2f);
+
             }
+        
             yield return null;
         }
          
         }
-     
+    
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+        if(collision.transform.tag == "ground")
+        {
+            isGrounded = true;
+        }
     }
+ 
+}
     
 
 
