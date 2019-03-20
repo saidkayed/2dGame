@@ -40,9 +40,10 @@ public class PlanetClick : MonoBehaviour
                 transform.DOScale(1,5);
                 StartCoroutine("Load_Level");
             }
-            if (transform.name == "Planet X")
+            if (transform.name == "Mars")
             {
                 transform.DOScale(1, 5);
+                StartCoroutine("Load_Level");
                 // SceneManager.LoadScene("Earth");
             }
 
@@ -64,6 +65,13 @@ public class PlanetClick : MonoBehaviour
     IEnumerator Load_Level()
     {
         yield return new WaitForSeconds(5);
-        SceneManager.LoadScene("Earth");
+        if (transform.name == "Earth")
+        {
+            SceneManager.LoadScene("Earth");
+        }
+        else
+        {
+            SceneManager.LoadScene("Mars");
+        }
     }
 }

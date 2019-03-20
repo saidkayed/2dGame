@@ -44,7 +44,7 @@ public class Player_Controller : MonoBehaviour
     }
     void Update()
     {
-        print(can_be_hit + "" + "kdkdkd");
+   
         
 
         if (isD)
@@ -164,9 +164,10 @@ public class Player_Controller : MonoBehaviour
            
             Vector3 push_back = transform.position -  collision.transform.position;
          
-
+          
             StartCoroutine("Ouch");
             
+     
 
             if(push_back.x > 0)
                 {
