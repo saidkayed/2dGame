@@ -8,6 +8,7 @@ public class Enemy_behaviot : MonoBehaviour
     public GameObject Player;
     Vector3 start_pos;
     bool startCheck;
+    bool can_attack;
    
 
    
@@ -17,6 +18,7 @@ public class Enemy_behaviot : MonoBehaviour
     {
      
         start_pos = transform.position;
+        can_attack = true;
     }
 
     
@@ -27,7 +29,7 @@ public class Enemy_behaviot : MonoBehaviour
 
         
 
-        if(distance_player < 6)
+        if(distance_player < 6 && can_attack)
         {
             print("walk to");
             startCheck = true;
@@ -63,16 +65,38 @@ public class Enemy_behaviot : MonoBehaviour
             print(startCheck);
         }
 
-       
-       
-        
-
-
-
-
-
-
     }
-   
-   
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.transform.tag == "Player")
+        {
+            can_attack= false;
+            StartCoroutine("attack");
+        }
+    }
+    
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            can_attack = true;
+            transform.GetComponent<CircleCollider2D>().radius = 0.16f;
+            StopCoroutine("attack");
+
+        }
+    }
+
+    IEnumerator attack()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.4f);
+            transform.GetComponent<CircleCollider2D>().radius = 0.20f;
+            yield return new WaitForSeconds(0.4f);
+            transform.GetComponent<CircleCollider2D>().radius = 0.16f;
+
+            yield return null;
+        }
+    }
 }

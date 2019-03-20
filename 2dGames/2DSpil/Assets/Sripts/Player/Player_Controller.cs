@@ -23,13 +23,16 @@ public class Player_Controller : MonoBehaviour
     bool isGrounded;
     bool isA;
     bool isD;
-
+    bool can_be_hit;
+    
 
 
     private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
+
+        can_be_hit = true;
         rb = GetComponent<Rigidbody2D>();
         StartCoroutine("Move_Cam");
         anim = GetComponent<Animator>();
@@ -41,7 +44,7 @@ public class Player_Controller : MonoBehaviour
     }
     void Update()
     {
-
+        print(can_be_hit + "" + "kdkdkd");
         
 
         if (isD)
@@ -146,7 +149,7 @@ public class Player_Controller : MonoBehaviour
         }
          
         }
-    
+   
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -155,6 +158,48 @@ public class Player_Controller : MonoBehaviour
         {
             isGrounded = true;
         }
+       
+        if(collision.transform.tag == "Alien" && can_be_hit)
+        {
+           
+            Vector3 push_back = transform.position -  collision.transform.position;
+         
+
+            StartCoroutine("Ouch");
+            
+
+            if(push_back.x > 0)
+                {
+                transform.DOMoveX(collision.transform.position.x + 6, 1);
+            }
+            if(push_back.x < 0)
+                {
+                transform.DOMoveX(collision.transform.position.x - 6, 1);
+            }
+        }   
+    }
+   
+   
+
+    IEnumerator Ouch()
+    {
+        float hp = Stats.HP - 5;
+
+        Stats.HP = hp;
+        // can_be_hit = false;
+        for (int i = 0; i < 4; i++) {
+            GetComponent<SpriteRenderer>().DOFade(0, 0);
+
+
+            yield return new WaitForSeconds(0.3f);
+            
+        GetComponent<SpriteRenderer>().color = new Color(1f,1f,1f,1f);
+            yield return new WaitForSeconds(0.3f);
+    
+        }
+        //yield return new WaitForSeconds(1);
+       // can_be_hit = true;
+
     }
  
 }
